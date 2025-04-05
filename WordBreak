@@ -1,0 +1,30 @@
+import java.util.*;
+
+public class WordBreak {
+    public static void main(String[] args) {
+        Set<String> dictionary = new HashSet<>(Arrays.asList("leet", "code"));
+        String word = "leetcode";
+
+        boolean canSegment = wordBreak(word, dictionary);
+        System.out.println(canSegment);
+    }
+
+    public static boolean wordBreak(String word, Set<String> dictionary) {
+        return backtrack(word, dictionary, 0);
+    }
+
+    private static boolean backtrack(String word, Set<String> dict, int start) {
+        if (start == word.length()) {
+            return true;
+        }
+
+        for (int end = start + 1; end <= word.length(); end++) {
+            String prefix = word.substring(start, end);
+            if (dict.contains(prefix) && backtrack(word, dict, end)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
