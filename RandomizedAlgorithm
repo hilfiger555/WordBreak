@@ -1,0 +1,26 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class MonteCarloPiEstimator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Number of random points: ");
+        int totalPoints = scanner.nextInt();
+        scanner.close();
+
+        int insideCircle = 0;
+        Random rand = new Random();
+
+        for (int i = 0; i < totalPoints; i++) {
+            double x = rand.nextDouble(); // [0,1)
+            double y = rand.nextDouble(); // [0,1)
+
+            if (x * x + y * y <= 1.0) {
+                insideCircle++;
+            }
+        }
+
+        double piEstimate = 4.0 * insideCircle / totalPoints;
+        System.out.printf("Estimated Pi: %.4f%n", piEstimate);
+    }
+}
