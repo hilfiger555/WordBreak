@@ -1,0 +1,94 @@
+import java.util.*;
+
+class Edge implements Comparable<Edge> {
+    int src, dest, weight;
+
+    public Edge(int src, int dest, int weight) {
+        this.src = src;
+        this.dest = dest;
+        this.weight = weight;
+    }
+
+    public int compareTo(Edge other) {
+        return this.weight - other.weight;
+    }
+}
+
+class DisjointSet {
+    int[] parent, rank;
+
+    public DisjointSet(int size) {
+        parent = new int[size];
+        rank = new int[size];
+        for (int i = 0; i < size; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+    }
+
+    public int find(int u) {
+        if (parent[u] != u)
+            parent[u] = find(parent[u]);
+        return parent[u];
+    }
+
+    public void union(int u, int v) {
+        int uRoot = find(u);
+        int vRoot = find(v);
+        if (uRoot == vRoot)
+            return;
+        if (rank[uRoot] < rank[vRoot]) {
+            parent[uRoot] = vRoot;
+        } else if (rank[uRoot] > rank[vRoot]) {
+            parent[vRoot] = uRoot;
+        } else {
+            parent[vRoot] = uRoot;
+            rank[uRoot]++;
+        }
+    }
+}
+
+public class KruskalMST {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Number of vertices: ");
+        int vertices = scanner.nextInt();
+
+        System.out.print("Number of edges: ");
+        int edgesCount = scanner.nextInt();
+
+        List<Edge> edges = new ArrayList<>();
+
+        System.out.println("Edge List (source destination weight):");
+        for (int i = 0; i < edgesCount; i++) {
+            int src = scanner.nextInt();
+            int dest = scanner.nextInt();
+            int weight = scanner.nextInt();
+            edges.add(new Edge(src, dest, weight));
+        }
+
+        scanner.close();
+
+        Collections.sort(edges);
+
+        DisjointSet ds = new DisjointSet(vertices);
+        List<Edge> mst = new ArrayList<>();
+        int totalWeight = 0;
+
+        for (Edge edge : edges) {
+            if (ds.find(edge.src) != ds.find(edge.dest)) {
+                ds.union(edge.src, edge.dest);
+                mst.add(edge);
+                totalWeight += edge.weight;
+                if (mst.size() == vertices - 1) break;
+            }
+        }
+
+        System.out.println("Edges in the Minimum Spanning Tree:");
+        for (Edge e : mst) {
+            System.out.println("Edge: " + e.src + " - " + e.dest + ", Weight: " + e.weight);
+        }
+        System.out.println("Total weight of MST: " + totalWeight);
+    }
+}
